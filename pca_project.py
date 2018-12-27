@@ -19,8 +19,10 @@ class PCAProjectNet(nn.Module):
 
         first_compo = eigvec[:, 0]
 
-        if first_compo[0].item() < 0.:
-            first_compo = -first_compo
+        maxv = projected_map.max()
+        minv = projected_map.min()
+
+        projected_map *= (maxv + minv) / torch.abs(maxv + minv)
 
         projected_map = torch.matmul(first_compo.unsqueeze(0), reshaped_features).view(1, features.size(0), -1)\
             .view(features.size(0), features.size(2), features.size(3))
