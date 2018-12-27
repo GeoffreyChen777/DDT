@@ -17,7 +17,10 @@ class PCAProjectNet(nn.Module):
         cov = torch.matmul(reshaped_features, reshaped_features.t()) / k
         eigval, eigvec = torch.eig(cov, eigenvectors=True)
 
-        first_compo = -eigvec[:, 0]
+        first_compo = eigvec[:, 0]
+
+        if first_compo[0].item() < 0.:
+            first_compo = -first_compo
 
         projected_map = torch.matmul(first_compo.unsqueeze(0), reshaped_features).view(1, features.size(0), -1)\
             .view(features.size(0), features.size(2), features.size(3))
